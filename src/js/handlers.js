@@ -1,6 +1,8 @@
-import { saveTask } from './local-storage-api';
+import { nanoid } from 'nanoid';
+import { getTasks, saveTask } from './local-storage-api';
+import { renderTask, renderTasks } from './render-tasks';
 
-export function onHeaderFormSubmit(e) {
+export const onHeaderFormSubmit = e => {
   e.preventDefault();
   const { taskName, taskDescription } = e.target.elements;
   const taskNameValue = taskName.value.trim();
@@ -8,6 +10,21 @@ export function onHeaderFormSubmit(e) {
   if (!taskNameValue || !taskDescriptionValue) {
     return;
   }
-  const task = [taskNameValue, taskDescriptionValue];
+  const task = { id: nanoid(), taskNameValue, taskDescriptionValue };
   saveTask(task);
-}
+  renderTask(task);
+  e.target.reset();
+};
+
+export const onTaskListItem = e => {
+  if (e.target.nodeName !== 'BUTTON') {
+    return;
+  }
+  console.log(e.target);
+};
+
+export const initHomePage = () => {
+  const tasks = getTasks();
+  renderTasks(tasks);
+  console.log(tasks);
+};
